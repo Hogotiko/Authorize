@@ -26,7 +26,7 @@ export const LoginPage: React.FC<ILogin> = ({ isAuth, setIsAuth }) => {
     formState: { errors },
     handleSubmit,
     reset,
-  } = useForm<FormData>();
+  } = useForm<FormData>({ mode: "onBlur" });
 
   const person = getUser();
 
@@ -53,10 +53,7 @@ export const LoginPage: React.FC<ILogin> = ({ isAuth, setIsAuth }) => {
       setTimeout(() => {
         setIsAuth(null);
         isLoadingRef.current.loading = false;
-        reset({
-          userName: "",
-          password: "",
-        });
+        reset();
       }, 4000);
     }
   };
@@ -94,7 +91,6 @@ export const LoginPage: React.FC<ILogin> = ({ isAuth, setIsAuth }) => {
           type="password"
           {...register("password", {
             required: "Обязательное поле",
-            // pattern: /^[A-Za-z]+$/i,
           })}
         />
         <UserRequireError>
