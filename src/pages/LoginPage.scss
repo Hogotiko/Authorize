@@ -1,0 +1,29 @@
+.checkbox {
+  display: none;
+}
+
+.checkbox + .label-checkbox:before {
+  margin-right: 15px;
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  border: 2px solid gray;
+  background: #ffffff;
+  position: relative;
+  display: inline-block;
+  content: "";
+}
+
+.checkbox:checked + .label-checkbox:before {
+  background: #4a67ff;
+}
+
+.loading:disabled {
+  background: #99a9ff;
+}
+
+.form-control:focus {
+  border: 1px solid #e26f6f !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
