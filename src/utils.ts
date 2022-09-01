@@ -11,9 +11,7 @@ export const setUser = () => {
 export const setToken = () => {
   localStorage.setItem(
     "token",
-    JSON.stringify({
-      token: "cThIIoDvwdueQB468K5xDc5633seEFoqwxjF_xSJyQQ",
-    })
+    '"cThIIoDvwdueQB468K5xDc5633seEFoqwxjF_xSJyQQ"'
   );
 };
 

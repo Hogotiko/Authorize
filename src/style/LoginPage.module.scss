@@ -2,7 +2,7 @@
   display: none;
 }
 
-.checkbox + .label-checkbox:before {
+.checkbox + .labelCheckbox:before {
   margin-right: 15px;
   width: 14px;
   height: 14px;
@@ -14,7 +14,7 @@
   content: "";
 }
 
-.checkbox:checked + .label-checkbox:before {
+.checkbox:checked + .labelCheckbox:before {
   background: #4a67ff;
 }
 

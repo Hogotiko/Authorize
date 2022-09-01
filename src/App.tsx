@@ -6,29 +6,20 @@ import { Layout } from "./components/Layout";
 import { getToken } from "./utils";
 
 function App() {
-  const [isAuth, setIsAuth] = useState<boolean | null>(null);
-  const token = getToken();
+  const [isAuth, setIsAuth] = useState(getToken());
 
   return (
-    <div>
-      <Layout>
-        <Routes>
-          <Route
-            path="/"
-            element={<LoginPage isAuth={isAuth} setIsAuth={setIsAuth} />}
-          />
-          {token ? (
-            <Route
-              path="/profile"
-              element={<ProfilePage setIsAuth={setIsAuth} />}
-            />
-          ) : (
-            <Route path="*" element={<Navigate to={"/"} />} />
-          )}
+    <Layout>
+      <Routes>
+        <Route path="/" element={<LoginPage setIsAuth={setIsAuth} />} />
+        {isAuth ? (
+          <Route path="/profile" element={<ProfilePage />} />
+        ) : (
           <Route path="*" element={<Navigate to={"/"} />} />
-        </Routes>
-      </Layout>
-    </div>
+        )}
+        <Route path="*" element={<Navigate to={"/"} />} />
+      </Routes>
+    </Layout>
   );
 }
 

@@ -2,81 +2,77 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {
-  Alert,
   Checkbox,
   CheckboxContainer,
-  Circle,
   LoginPageContainer,
   MyButton,
   MyInput,
   MyLabel,
-  UserEmptyError,
   UserRequireError,
 } from "../components/StyledComponents";
-import "./LoginPage.scss";
-import { FormData, ILogin } from "../types";
+import { IFormData, ILoginPage } from "../types";
 import { getUser, setToken, setUser } from "../utils";
+import styles from "../style/LoginPage.module.scss";
+import { AlertModal } from "../components/AlertModal";
 
-export const LoginPage: React.FC<ILogin> = ({ isAuth, setIsAuth }) => {
+export const LoginPage: React.FC<ILoginPage> = ({ setIsAuth }) => {
   const [userName, setUserName] = useState("");
+  const [modalError, setModalError] = useState<boolean>(false);
   const isLoadingRef = useRef({ loading: false });
   const navigate = useNavigate();
-  const person = getUser();
+  const { userName: dataName, password: dataPassword } = getUser();
+
+  useEffect(() => {
+    setUser();
+  }, []);
 
   const {
     register,
     formState: { errors },
     handleSubmit,
     reset,
-  } = useForm<FormData>({ mode: "all" });
+  } = useForm<IFormData>({ mode: "all" });
 
-  useEffect(() => {
-    setUser();
-  }, []);
+  const handleSuccess = () => {
+    setToken();
+    setIsAuth(true);
+    setTimeout(() => {
+      navigate("/profile");
+    }, 1000);
+  };
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
-    setUserName(data.userName);
+  const handleError = () => {
+    setModalError(true);
+    setTimeout(() => {
+      setModalError(false);
+      isLoadingRef.current.loading = false;
+      reset();
+    }, 3000);
+  };
+
+  const addErrorClass = (isValid: boolean) => {
+    return isValid ? `form-control ${styles.focused}` : "form-control";
+  };
+
+  const onSubmit: SubmitHandler<IFormData> = ({ userName, password }) => {
+    setUserName(userName);
+    const isValidUser = dataName === userName && dataPassword === password;
     isLoadingRef.current.loading = true;
-
-    if (
-      person.userName === data.userName &&
-      person.password === data.password
-    ) {
-      setToken();
-      setIsAuth(true);
-      setTimeout(() => {
-        navigate("/profile");
-      }, 2000);
+    if (isValidUser) {
+      handleSuccess();
     } else {
-      setIsAuth(false);
-      setTimeout(() => {
-        setIsAuth(null);
-        isLoadingRef.current.loading = false;
-        reset();
-      }, 4000);
+      handleError();
     }
   };
 
   return (
     <LoginPageContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {isAuth === false && (
-          <Alert>
-            <Circle>
-              <img alt="icon" src="assets/icon.svg" />
-            </Circle>
-            <UserEmptyError>
-              Пользователя {userName} не существует
-            </UserEmptyError>
-          </Alert>
-        )}
+        {modalError && <AlertModal userName={userName} />}
 
         <MyLabel>Логин</MyLabel>
         <MyInput
-          className={
-            errors?.userName?.message ? "form-control focused" : "form-control"
-          }
-          style={{}}
+          className={addErrorClass(!!errors?.userName?.message)}
           type="email"
           {...register("userName", {
             required: "Обязательное поле",
@@ -90,9 +86,7 @@ export const LoginPage: React.FC<ILogin> = ({ isAuth, setIsAuth }) => {
 
         <MyLabel>Пароль</MyLabel>
         <MyInput
-          className={
-            errors?.password?.message ? "form-control focused" : "form-control"
-          }
+          className={addErrorClass(!!errors?.password?.message)}
           type="password"
           {...register("password", {
             required: "Обязательное поле",
@@ -107,14 +101,14 @@ export const LoginPage: React.FC<ILogin> = ({ isAuth, setIsAuth }) => {
         </UserRequireError>
 
         <CheckboxContainer>
-          <Checkbox type="checkbox" className="checkbox" id="myinput" />
-          <MyLabel className="label-checkbox" htmlFor="myinput">
+          <Checkbox type="checkbox" className={styles.checkbox} id="myinput" />
+          <MyLabel className={styles.labelCheckbox} htmlFor="myinput">
             Запомнить пароль
           </MyLabel>
         </CheckboxContainer>
         <div>
           <MyButton
-            className="loading"
+            className={styles.loading}
             type="submit"
             disabled={isLoadingRef.current.loading}
           >

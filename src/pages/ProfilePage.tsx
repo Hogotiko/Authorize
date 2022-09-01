@@ -6,10 +6,9 @@ import {
   ProfileText,
   UserText,
 } from "../components/StyledComponents";
-import { ILogin } from "../types";
 import { deleteToken, deleteUser, getUser } from "../utils";
 
-export const ProfilePage: React.FC<ILogin> = ({ setIsAuth }) => {
+export const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
 
   const { userName } = getUser();
@@ -17,7 +16,6 @@ export const ProfilePage: React.FC<ILogin> = ({ setIsAuth }) => {
   const handleClick = () => {
     deleteUser();
     deleteToken();
-    setIsAuth(null);
     navigate("/");
   };
 
