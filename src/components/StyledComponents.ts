@@ -45,7 +45,6 @@ export const MyInput = styled.input`
   border: none;
   width: 640px;
   height: 60px;
-  caret-color: #e26f6f;
 `;
 
 export const Checkbox = styled.input`

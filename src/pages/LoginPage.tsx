@@ -38,7 +38,7 @@ export const LoginPage: React.FC<ILoginPage> = ({ setIsAuth }) => {
     setIsAuth(true);
     setTimeout(() => {
       navigate("/profile");
-    }, 1000);
+    }, 2000);
   };
 
   const handleError = () => {
