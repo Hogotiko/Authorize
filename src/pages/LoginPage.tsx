@@ -15,22 +15,20 @@ import {
 } from "../components/StyledComponents";
 import "./LoginPage.scss";
 import { FormData, ILogin } from "../types";
-import { getUser, setUser } from "../utils";
+import { getUser, setToken, setUser } from "../utils";
 
 export const LoginPage: React.FC<ILogin> = ({ isAuth, setIsAuth }) => {
   const [userName, setUserName] = useState("");
   const isLoadingRef = useRef({ loading: false });
+  const navigate = useNavigate();
+  const person = getUser();
 
   const {
     register,
     formState: { errors },
     handleSubmit,
     reset,
-  } = useForm<FormData>({ mode: "onBlur" });
-
-  const person = getUser();
-
-  const navigate = useNavigate();
+  } = useForm<FormData>({ mode: "all" });
 
   useEffect(() => {
     setUser();
@@ -44,6 +42,7 @@ export const LoginPage: React.FC<ILogin> = ({ isAuth, setIsAuth }) => {
       person.userName === data.userName &&
       person.password === data.password
     ) {
+      setToken();
       setIsAuth(true);
       setTimeout(() => {
         navigate("/profile");
@@ -74,27 +73,37 @@ export const LoginPage: React.FC<ILogin> = ({ isAuth, setIsAuth }) => {
 
         <MyLabel>Логин</MyLabel>
         <MyInput
-          className="form-control"
+          className={
+            errors?.userName?.message ? "form-control focused" : "form-control"
+          }
+          style={{}}
           type="email"
           {...register("userName", {
             required: "Обязательное поле",
-            // pattern: /^[A-Za-z]+$/i,
           })}
         />
         <UserRequireError>
-          {errors?.userName && <span>{errors.userName.message}</span>}
+          {errors?.userName && (
+            <span>{errors?.userName?.message || "Error !"}</span>
+          )}
         </UserRequireError>
 
         <MyLabel>Пароль</MyLabel>
         <MyInput
-          className="form-control"
+          className={
+            errors?.password?.message ? "form-control focused" : "form-control"
+          }
           type="password"
           {...register("password", {
             required: "Обязательное поле",
+            minLength: {
+              value: 6,
+              message: "Минимум 6 символов",
+            },
           })}
         />
         <UserRequireError>
-          {errors?.password && <span>{errors.password.message}</span>}
+          {errors?.password && <span>{errors?.password?.message}</span>}
         </UserRequireError>
 
         <CheckboxContainer>
